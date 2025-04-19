@@ -40,7 +40,7 @@ public:
 };
 
 int main() {
-    Car cars[100];
+    Car cars[20];
     string cn,f,b;
     int i=0;
     char choice;
