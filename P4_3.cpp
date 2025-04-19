@@ -56,7 +56,7 @@ int main() {
         i++;
         cout<<"Do you want to add another car? (y/n): ";
         cin>>choice;
-    } while((choice=='y'||choice=='Y')&&i<100);
+    } while(choice=='y'||choice=='Y');
 
     cout<<"\nDisplaying all car details:\n";
     for(int j=0;j<i;j++) {
