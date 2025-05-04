@@ -5,10 +5,43 @@
 using namespace std;
 #define MAX 25
 
-struct Student {
+class Student {
     char name[50];
     float marks;
     float tuition;
+
+public:
+    void input() {
+        cout<<"Enter student name: ";
+        cin.ignore();
+        cin.getline(name,50);
+
+        cout<<"Enter marks: ";
+        cin>>marks;
+
+        cout<<"Enter tuition fee: ";
+        cin>>tuition;
+    }
+
+    void saveToFile() {
+        ofstream file("File_7_5.txt",ios::app);
+        file<<name<<"\n";
+        file<<marks<<" "<<tuition<<"\n";
+        file.close();
+    }
+
+    void displayFormatted(ofstream &file) {
+        file<<setw(20)<<left<<name;
+        file<<setw(10)<<fixed<<setprecision(2)<<marks;
+        file<<"₹"<<fixed<<setprecision(2)<<tuition<<endl;
+    }
+
+    bool loadFromFile(ifstream &file) {
+        if(!file.getline(name,50))return false;
+        file>>marks>>tuition;
+        file.ignore();
+        return true;
+    }
 };
 
 Student students[MAX];
@@ -18,19 +51,10 @@ void loadFromFile() {
     ifstream file("File_7_5.txt");
     if(!file)return;
 
-    while(file.getline(students[count].name,50)) {
-        file>>students[count].marks>>students[count].tuition;
-        file.ignore();
+    while(count<MAX&&students[count].loadFromFile(file)) {
         count++;
     }
 
-    file.close();
-}
-
-void saveRawData(Student s) {
-    ofstream file("File_7_5.txt",ios::app);
-    file<<s.name<<"\n";
-    file<<s.marks<<" "<<s.tuition<<"\n";
     file.close();
 }
 
@@ -47,9 +71,7 @@ void overwriteWithFormattedReport() {
     file<<setfill(' ');
 
     for(int i=0;i<count;i++) {
-        file<<setw(20)<<left<<students[i].name;
-        file<<setw(10)<<fixed<<setprecision(2)<<students[i].marks;
-        file<<"₹"<<fixed<<setprecision(2)<<students[i].tuition<<endl;
+        students[i].displayFormatted(file);
     }
 
     file<<setfill('-')<<setw(45)<<"-"<<endl;
@@ -62,17 +84,8 @@ void addStudent() {
         return;
     }
 
-    cout<<"Enter student name: ";
-    cin.ignore();
-    cin.getline(students[count].name,50);
-
-    cout<<"Enter marks: ";
-    cin>>students[count].marks;
-
-    cout<<"Enter tuition fee: ";
-    cin>>students[count].tuition;
-
-    saveRawData(students[count]);
+    students[count].input();
+    students[count].saveToFile();
     count++;
 
     cout<<"Student added.\n\n";
@@ -106,6 +119,7 @@ int main() {
         else cout<<"Invalid choice.\n";
 
     } while(choice!=3);
+
     cout<<"Anshkumar Darji - 24CE022"<<endl;
     return 0;
 }
