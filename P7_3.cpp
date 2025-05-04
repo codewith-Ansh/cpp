@@ -5,10 +5,42 @@ using namespace std;
 
 const int MAX=25;
 
-struct Item {
+class Item {
+public:
     char name[50];
     int quantity;
     float price;
+
+    void input() {
+        cout<<"Enter item name: ";
+        cin.ignore();
+        cin.getline(name,50);
+        cout<<"Enter quantity: ";
+        cin>>quantity;
+        cout<<"Enter price: ";
+        cin>>price;
+    }
+
+    void display() {
+        cout<<"Name: "<<name<<"\n";
+        cout<<"Quantity: "<<quantity<<"\n";
+        cout<<"Price: ₹"<<price<<"\n";
+        cout<<"----------------------\n";
+    }
+
+    void saveToFile(ofstream &file) {
+        file<<name<<"\n";
+        file<<quantity<<" "<<price<<"\n";
+    }
+
+    bool readFromFile(ifstream &file) {
+        if(file.getline(name,50)) {
+            file>>quantity>>price;
+            file.ignore(); // to skip the newline after price
+            return true;
+        }
+        return false;
+    }
 };
 
 Item items[MAX];
@@ -18,19 +50,15 @@ void loadFromFile() {
     ifstream file("File_7_3.txt");
     if(!file) return;
 
-    while(file.getline(items[count].name,50)) {
-        file>>items[count].quantity>>items[count].price;
-        file.ignore();
-        count++;
+    while(count<MAX) {
+        if(items[count].readFromFile(file)) {
+            count++;
+        }
+        else {
+            break;
+        }
     }
 
-    file.close();
-}
-
-void saveToFile(Item newItem) {
-    ofstream file("File_7_3.txt",ios::app);
-    file<<newItem.name<<"\n";
-    file<<newItem.quantity<<" "<<newItem.price<<"\n";
     file.close();
 }
 
@@ -40,20 +68,14 @@ void addItem() {
         return;
     }
 
-    cout<<"Enter item name: ";
-    cin.ignore(); // clear input buffer
-    cin.getline(items[count].name,50);
+    items[count].input();
 
-    cout<<"Enter quantity: ";
-    cin>>items[count].quantity;
+    ofstream file("File_7_3.txt",ios::app);
+    items[count].saveToFile(file);
+    file.close();
 
-    cout<<"Enter price: ";
-    cin>>items[count].price;
-
-    saveToFile(items[count]);
     count++;
-
-    cout<<"Item added.\n";
+    cout<<"Item added successfully!\n";
 }
 
 void viewItems() {
@@ -64,10 +86,7 @@ void viewItems() {
 
     cout<<"\nInventory:\n";
     for(int i=0;i<count;i++) {
-        cout<<"Name: "<<items[i].name<<"\n";
-        cout<<"Quantity: "<<items[i].quantity<<"\n";
-        cout<<"Price: "<<items[i].price<<"\n";
-        cout<<"-------------------\n";
+        items[i].display();
     }
 }
 
@@ -80,10 +99,8 @@ void searchItem() {
     bool found=false;
     for(int i=0;i<count;i++) {
         if(strcmp(items[i].name,search)==0) {
-            cout<<"Item found!\n";
-            cout<<"Name: "<<items[i].name<<"\n";
-            cout<<"Quantity: "<<items[i].quantity<<"\n";
-            cout<<"Price: "<<items[i].price<<"\n";
+            cout<<"Item found:\n";
+            items[i].display();
             found=true;
             break;
         }
@@ -111,9 +128,10 @@ int main() {
         else if(choice==2) viewItems();
         else if(choice==3) searchItem();
         else if(choice==4) cout<<"Goodbye!\n";
-        else cout<<"Invalid option. Try again.\n";
+        else cout<<"Invalid choice. Try again.\n";
 
     } while(choice!=4);
+
     cout<<"Anshkumar Darji - 24CE022"<<endl;
     return 0;
 }
