@@ -1,77 +1,78 @@
 #include<iostream>
 using namespace std;
 
-class F;
+class Fahrenheit;
 
-class C {
+class Celsius {
 public:
     float c;
 
-    C(float t=0) {
+    Celsius(float t=0){
         c=t;
     }
 
-    F toF();
+    Fahrenheit toFahrenheit();
 
-    void show() {
+    void show(){
         cout<<c<<"C"<<endl;
     }
 };
 
-class F {
+class Fahrenheit {
 public:
     float f;
 
-    F(float t=0) {
+    Fahrenheit(float t=0){
         f=t;
     }
 
-    C toC() {
-        return C((f-32)*5/9);
+    Celsius toCelsius(){
+        return Celsius((f-32)*5/9);
     }
 
-    void show() {
+    void show(){
         cout<<f<<"F"<<endl;
     }
 };
 
-F C::toF() {
-    return F((c*9/5)+32);
+Fahrenheit Celsius::toFahrenheit(){
+    return Fahrenheit((c*9/5)+32);
 }
 
-int main() {
+int main(){
     float x;
     int ch;
 
-    while(1) {
-        cout<<"1.C to F\n2.F to C\n3.Exit\nEnter: ";
+    while(1){
+        cout<<"1.Celsius to Fahrenheit\n2.Fahrenheit to Celsius\n3.Exit\nEnter: ";
         cin>>ch;
 
-        if(ch==1) {
-            cout<<"C: ";
+        if(ch==1){
+            cout<<"Celsius: ";
             cin>>x;
-            C c(x);
-            F f=c.toF();
-            cout<<"F: ";
+            Celsius c(x);
+            Fahrenheit f=c.toFahrenheit();
+            cout<<"Fahrenheit: ";
             f.show();
             cout<<endl;
         }
-        else if(ch==2) {
-            cout<<"F: ";
+        else if(ch==2){
+            cout<<"Fahrenheit: ";
             cin>>x;
-            F f(x);
-            C c=f.toC();
-            cout<<"C: ";
+            Fahrenheit f(x);
+            Celsius c=f.toCelsius();
+            cout<<"Celsius: ";
             c.show();
             cout<<endl;
         }
-        else if(ch==3) {
+        else if(ch==3){
             break;
         }
-        else {
+        else{
             cout<<"Enter valid input"<<endl;
         }
     }
+
     cout<<"Anshkumar Darji-24CE022"<<endl;
     return 0;
 }
