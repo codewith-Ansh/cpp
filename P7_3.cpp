@@ -6,25 +6,28 @@ using namespace std;
 const int MAX=25;
 
 class Item {
-public:
+private:
     char name[50];
     int quantity;
     float price;
 
+public:
     void input() {
-        cout<<"Enter item name: ";
+        cout<<"Enter item name:";
         cin.ignore();
         cin.getline(name,50);
-        cout<<"Enter quantity: ";
+
+        cout<<"Enter quantity:";
         cin>>quantity;
-        cout<<"Enter price: ";
+
+        cout<<"Enter price:";
         cin>>price;
     }
 
     void display() {
-        cout<<"Name: "<<name<<"\n";
-        cout<<"Quantity: "<<quantity<<"\n";
-        cout<<"Price: ₹"<<price<<"\n";
+        cout<<"Name:"<<name<<"\n";
+        cout<<"Quantity:"<<quantity<<"\n";
+        cout<<"Price:"<<price<<"\n";
         cout<<"----------------------\n";
     }
 
@@ -34,12 +37,14 @@ public:
     }
 
     bool readFromFile(ifstream &file) {
-        if(file.getline(name,50)) {
-            file>>quantity>>price;
-            file.ignore(); // to skip the newline after price
-            return true;
-        }
-        return false;
+        if(!file.getline(name,50)) return false;
+        file>>quantity>>price;
+        file.ignore();
+        return true;
+    }
+
+    bool isMatch(const char searchName[]) {
+        return strcmp(name,searchName)==0;
     }
 };
 
@@ -50,13 +55,8 @@ void loadFromFile() {
     ifstream file("File_7_3.txt");
     if(!file) return;
 
-    while(count<MAX) {
-        if(items[count].readFromFile(file)) {
-            count++;
-        }
-        else {
-            break;
-        }
+    while(count<MAX && items[count].readFromFile(file)) {
+        count++;
     }
 
     file.close();
@@ -75,7 +75,7 @@ void addItem() {
     file.close();
 
     count++;
-    cout<<"Item added successfully!\n";
+    cout<<"Item added successfully!\n\n";
 }
 
 void viewItems() {
@@ -84,22 +84,27 @@ void viewItems() {
         return;
     }
 
-    cout<<"\nInventory:\n";
+    cout<<"\n--- Inventory ---\n";
     for(int i=0;i<count;i++) {
         items[i].display();
     }
 }
 
 void searchItem() {
-    char search[50];
-    cout<<"Enter item name to search: ";
+    if(count==0) {
+        cout<<"Inventory is empty.\n";
+        return;
+    }
+
+    char searchName[50];
+    cout<<"Enter item name to search:";
     cin.ignore();
-    cin.getline(search,50);
+    cin.getline(searchName,50);
 
     bool found=false;
     for(int i=0;i<count;i++) {
-        if(strcmp(items[i].name,search)==0) {
-            cout<<"Item found:\n";
+        if(items[i].isMatch(searchName)) {
+            cout<<"\nItem found:\n";
             items[i].display();
             found=true;
             break;
@@ -116,22 +121,22 @@ int main() {
 
     int choice;
     do {
-        cout<<"--- MENU ---\n";
+        cout<<"\n--- MENU ---\n";
         cout<<"1. Add Item\n";
         cout<<"2. View Inventory\n";
         cout<<"3. Search Item\n";
         cout<<"4. Exit\n";
-        cout<<"Choose option: ";
+        cout<<"Choose option:";
         cin>>choice;
 
         if(choice==1) addItem();
         else if(choice==2) viewItems();
         else if(choice==3) searchItem();
-        else if(choice==4) cout<<"Goodbye!\n";
-        else cout<<"Invalid choice. Try again.\n";
+        else if(choice==4) cout<<"Thank You!\n";
+        else cout<<"Invalid option. Try again.\n";
 
     } while(choice!=4);
 
-    cout<<"Anshkumar Darji - 24CE022"<<endl;
+    cout<<"Anshkumar Darji - 24CE022\n";
     return 0;
 }
