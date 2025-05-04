@@ -1,25 +1,25 @@
 #include<iostream>
 #include<fstream>
-#include<iomanip>
 #include<cstring>
 using namespace std;
 #define MAX 25
 
 class Student {
+private:
     char name[50];
     float marks;
     float tuition;
 
 public:
     void input() {
-        cout<<"Enter student name: ";
+        cout<<"Enter student name:";
         cin.ignore();
         cin.getline(name,50);
 
-        cout<<"Enter marks: ";
+        cout<<"Enter marks:";
         cin>>marks;
 
-        cout<<"Enter tuition fee: ";
+        cout<<"Enter tuition fee:";
         cin>>tuition;
     }
 
@@ -30,17 +30,18 @@ public:
         file.close();
     }
 
-    void displayFormatted(ofstream &file) {
-        file<<setw(20)<<left<<name;
-        file<<setw(10)<<fixed<<setprecision(2)<<marks;
-        file<<"₹"<<fixed<<setprecision(2)<<tuition<<endl;
-    }
-
     bool loadFromFile(ifstream &file) {
         if(!file.getline(name,50))return false;
         file>>marks>>tuition;
         file.ignore();
         return true;
+    }
+
+    void display() {
+        cout<<"Name:"<<name<<"\n";
+        cout<<"Marks:"<<marks<<"\n";
+        cout<<"Tuition Fee:₹"<<tuition<<"\n";
+        cout<<"----------------------\n";
     }
 };
 
@@ -58,26 +59,6 @@ void loadFromFile() {
     file.close();
 }
 
-void overwriteWithFormattedReport() {
-    ofstream file("File_7_5.txt");
-    if(!file)return;
-
-    file<<setfill('-')<<setw(45)<<"-"<<endl;
-    file<<setfill(' ');
-    file<<setw(20)<<left<<"Name"
-        <<setw(10)<<"Marks"
-        <<setw(15)<<"Tuition Fee"<<endl;
-    file<<setfill('-')<<setw(45)<<"-"<<endl;
-    file<<setfill(' ');
-
-    for(int i=0;i<count;i++) {
-        students[i].displayFormatted(file);
-    }
-
-    file<<setfill('-')<<setw(45)<<"-"<<endl;
-    file.close();
-}
-
 void addStudent() {
     if(count>=MAX) {
         cout<<"Max limit reached.\n";
@@ -88,7 +69,7 @@ void addStudent() {
     students[count].saveToFile();
     count++;
 
-    cout<<"Student added.\n\n";
+    cout<<"Student added.\n";
 }
 
 void displayStudents() {
@@ -97,8 +78,10 @@ void displayStudents() {
         return;
     }
 
-    overwriteWithFormattedReport();
-    cout<<"Formatted report saved to File_7_5.txt\n\n";
+    cout<<"\n--- Student Records ---\n";
+    for(int i=0;i<count;i++) {
+        students[i].display();
+    }
 }
 
 int main() {
@@ -106,11 +89,11 @@ int main() {
 
     int choice;
     do {
-        cout<<"--- MENU ---\n";
+        cout<<"\n--- MENU ---\n";
         cout<<"1. Add Student\n";
         cout<<"2. Display Students\n";
         cout<<"3. Exit\n";
-        cout<<"Choose option: ";
+        cout<<"Choose option:";
         cin>>choice;
 
         if(choice==1)addStudent();
@@ -120,6 +103,6 @@ int main() {
 
     } while(choice!=3);
 
-    cout<<"Anshkumar Darji - 24CE022"<<endl;
+    cout<<"Anshkumar Darji - 24CE022\n";
     return 0;
 }
